@@ -1,0 +1,18 @@
+{
+  "resultCount": 2,
+  "results": [
+    {
+      "wrapperType": "track",
+      "trackName": "Here Comes the Sun",
+      "artistName": "The Beatles",
+      "trackViewUrl": "https://music.apple.com/us/album/here-comes-the-sun/1?i=1",
+      "collectionName": "Abbey Road"
+    },
+    {
+      "wrapperType": "track",
+      "trackName": "Something",
+      "artistName": "The Beatles",
+      "trackViewUrl": "https://music.apple.com/us/album/something/1?i=2"
+    }
+  ]
+}

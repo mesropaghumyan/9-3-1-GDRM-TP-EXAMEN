@@ -12,6 +12,15 @@ export interface BreakerConfig {
   readonly halfOpenAfterMs: number;
 }
 
+export interface ItunesConfig {
+  readonly baseUrl: string;
+  readonly timeoutMs: number;
+  readonly ttlMs: number;
+  /** iTunes allows roughly 20 requests per minute. */
+  readonly maxRequests: number;
+  readonly windowMs: number;
+}
+
 export interface AppConfig {
   readonly http: HttpConfig;
   readonly breaker: BreakerConfig;
@@ -19,6 +28,7 @@ export interface AppConfig {
     /** Chain order; always ends with the local list, which cannot fail. */
     readonly providerOrder: readonly ProviderName[];
     readonly localTracks: readonly Track[];
+    readonly itunes: ItunesConfig;
   };
   readonly notifications: {
     readonly channelFallbackOrder: readonly ChannelKind[];
