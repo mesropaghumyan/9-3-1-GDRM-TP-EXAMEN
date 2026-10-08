@@ -2,7 +2,7 @@
 
 Service qui réveille un utilisateur avec un morceau choisi selon le jour et la météo, puis le prévient sur son canal préféré (Email, SMS, Push). Point d'entrée : `WakeUpService.trigger(userId, dayOfWeek, weather)`.
 
-Référentiel technique : [CLAUDE.md](CLAUDE.md) · [SFD](docs/SFD.md) · [STD](docs/STD.md) · [ADR](docs/adr) · [Contrat OpenAPI](docs/api/openapi.yaml).
+Référentiel technique : [CLAUDE.md](CLAUDE.md) · [SFD](docs/SFD.md) · [STD](docs/STD.md) · [ADR](docs/adr) · [Contrat OpenAPI](docs/api/openapi.yaml) · [Revue de conformité](docs/REVUE_CONFORMITE.md).
 
 ## Prérequis et commandes
 

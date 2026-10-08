@@ -127,6 +127,21 @@ describe('Concrete implementations', () => {
     expect(offenders).toEqual([]);
   });
 
+  it('no `new` of a concrete implementation anywhere in src except container.ts', () => {
+    // Allowed by CLAUDE.md §1.5: value objects, errors, and platform types.
+    const allowed = /^(Map|Set|Date|URL|URLSearchParams|AbortController|Promise|Array|\w*Error)$/;
+    const offenders = files
+      .filter((file) => file.path !== 'src/main/container.ts')
+      .flatMap((file) =>
+        [...file.code.matchAll(/\bnew ([A-Z]\w*)/g)]
+          .map((match) => match[1] ?? '')
+          .filter((name) => !allowed.test(name))
+          .map((name) => `${file.path}: new ${name}`),
+      );
+
+    expect(offenders).toEqual([]);
+  });
+
   it('only src/main/container.ts registers implementations with the container', () => {
     const offenders = files
       .filter((file) => /\.(register|registerSingleton|registerInstance)\(/.test(file.text))

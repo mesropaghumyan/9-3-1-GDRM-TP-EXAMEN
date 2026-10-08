@@ -11,6 +11,7 @@ async function readBody(request: IncomingMessage): Promise<string> {
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of request) {
+    // Why: without a stream encoding, IncomingMessage always yields Buffers.
     const buffer = chunk as Buffer;
     size += buffer.length;
     if (size > MAX_BODY_BYTES) {
