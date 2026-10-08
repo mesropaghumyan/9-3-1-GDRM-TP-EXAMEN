@@ -1,0 +1,94 @@
+# ── Dépendances ─────────────────────────────────────────────
+node_modules/
+.pnp.*
+.yarn/
+.pnpm-store/
+# package-lock.json, sbom.cdx.json et docs/licenses.csv DOIVENT être commités (CLAUDE.md §4)
+
+# ── Build et sorties générées ───────────────────────────────
+dist/
+build/
+out/
+*.tsbuildinfo
+.tsx/
+
+# ── Tests et couverture ─────────────────────────────────────
+coverage/
+.nyc_output/
+.vitest/
+*.lcov
+test-results/
+junit.xml
+
+# ── Caches d'outils ─────────────────────────────────────────
+.eslintcache
+.prettiercache
+.cache/
+.temp/
+.tmp/
+.dependency-cruiser-cache/
+.npm/
+.node_repl_history
+
+# ── Journaux ────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# ── Secrets et configuration locale (config lue via main uniquement) ──
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials*.json
+
+# ── Archives de paquets ─────────────────────────────────────
+*.tgz
+
+# ── Éditeurs et IDE ─────────────────────────────────────────
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.iml
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ── Systèmes d'exploitation ─────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ── Claude Code / agents IA (local uniquement) ──────────────
+# .claude/skills/ et _bmad/ restent versionnés (méthode BMAD, CLAUDE.md §5.2)
+.claude/settings.local.json
+.claude/projects/
+.claude/*.local.*
+CLAUDE.local.md
+
+# ── BMAD : fichiers purement locaux ─────────────────────────
+_bmad/config.user.toml
+_bmad/custom/config.user.toml
+_bmad/**/__pycache__/
+**/__pycache__/
+*.pyc
