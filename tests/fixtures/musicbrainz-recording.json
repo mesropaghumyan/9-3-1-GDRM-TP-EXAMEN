@@ -1,0 +1,17 @@
+{
+  "created": "2026-10-08T10:00:00.000Z",
+  "count": 3,
+  "recordings": [
+    { "id": "no-artist", "title": "Orphan track" },
+    {
+      "id": "1",
+      "title": "Here Comes the Sun",
+      "artist-credit": [{ "name": "The Beatles", "artist": { "id": "a1", "name": "The Beatles" } }]
+    },
+    {
+      "id": "2",
+      "title": "Under Pressure",
+      "artist-credit": [{ "name": "Queen" }, { "name": "David Bowie" }]
+    }
+  ]
+}

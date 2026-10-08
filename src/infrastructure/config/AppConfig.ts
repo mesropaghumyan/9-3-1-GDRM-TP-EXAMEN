@@ -21,6 +21,17 @@ export interface ItunesConfig {
   readonly windowMs: number;
 }
 
+export interface MusicBrainzConfig {
+  readonly baseUrl: string;
+  /** Identifiable User-Agent, mandatory for MusicBrainz: `Name/version ( contact )`. */
+  readonly userAgent: string;
+  readonly timeoutMs: number;
+  readonly ttlMs: number;
+  /** MusicBrainz asks for about one request per second. */
+  readonly maxRequests: number;
+  readonly windowMs: number;
+}
+
 export interface AppConfig {
   readonly http: HttpConfig;
   readonly breaker: BreakerConfig;
@@ -29,6 +40,7 @@ export interface AppConfig {
     readonly providerOrder: readonly ProviderName[];
     readonly localTracks: readonly Track[];
     readonly itunes: ItunesConfig;
+    readonly musicbrainz: MusicBrainzConfig;
   };
   readonly notifications: {
     readonly channelFallbackOrder: readonly ChannelKind[];

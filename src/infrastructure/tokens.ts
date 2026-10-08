@@ -7,3 +7,4 @@ export const PUSH_SERVICE = Symbol('PushService');
 export const HTTP_CONFIG = Symbol('HttpConfig');
 export const BREAKER_CONFIG = Symbol('BreakerConfig');
 export const ITUNES_CONFIG = Symbol('ItunesConfig');
+export const MUSICBRAINZ_CONFIG = Symbol('MusicBrainzConfig');
