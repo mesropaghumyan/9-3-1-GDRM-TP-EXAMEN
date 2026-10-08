@@ -585,3 +585,39 @@ So that je valide la livraison.
 **When** il s'exécute
 **Then** typecheck, lint, format, arch, test, coverage, audit:deps et audit:licenses passent
 **And** le README ainsi que le fichier de statut du sprint sont à jour.
+
+
+## Epic 5: Exposition HTTP et contrat OpenAPI
+
+Un testeur peut appeler le service par HTTP et consulter un contrat OpenAPI à jour (décision : ADR 0002, `node:http` natif, aucun paquet ajouté). Dépend de l'Epic 1.
+
+### Story 5.1: Endpoint `POST /wake-ups` conforme à `docs/api/openapi.yaml`
+
+As a testeur,
+I want appeler `POST /wake-ups` et lire le contrat OpenAPI,
+So that je teste le service sans écrire de code.
+
+**Acceptance Criteria:**
+
+**Given** `docs/api/openapi.yaml`
+**When** les tests de cohérence s'exécutent
+**Then** chaque chemin déclaré existe côté serveur
+**And** les énumérations (jours, météos, canaux, raisons, sources) sont identiques à celles du code.
+
+**Given** un corps JSON valide
+**When** `POST /wake-ups` est appelé
+**Then** la réponse est 200 avec un `WakeUpResult` (`DELIVERED` ou `FAILED`)
+**And** une panne de fournisseur ou de canal ne produit jamais de 5xx muet.
+
+**Given** un jour, une météo ou un `userId` invalide, ou un JSON mal formé
+**When** `POST /wake-ups` est appelé
+**Then** la réponse est 400 `INVALID_INPUT` sans appel aux fournisseurs.
+
+**Given** `GET /health` et `GET /openapi.yaml`
+**When** ils sont appelés
+**Then** ils répondent 200, le second avec le contrat.
+
+**Given** la couche `presentation/http`
+**When** `npm run arch` s'exécute
+**Then** elle n'importe ni `infrastructure` ni `container`.
+
