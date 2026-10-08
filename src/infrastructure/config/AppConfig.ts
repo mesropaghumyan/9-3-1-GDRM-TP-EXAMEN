@@ -32,7 +32,13 @@ export interface MusicBrainzConfig {
   readonly windowMs: number;
 }
 
+export interface ServerConfig {
+  /** 0 lets the system pick a free port (used by tests). */
+  readonly port: number;
+}
+
 export interface AppConfig {
+  readonly server: ServerConfig;
   /** Used when the preferences service is unavailable (RG-10). */
   readonly defaultPreferences: UserPreferences;
   readonly http: HttpConfig;

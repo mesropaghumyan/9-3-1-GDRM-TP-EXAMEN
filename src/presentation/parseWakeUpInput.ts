@@ -7,14 +7,14 @@ import {
 import type { RawWakeUpInput, WakeUpInput } from './WakeUpInput.js';
 
 // Why: input labels are French, the domain is English; the mapping lives at the boundary only.
-const WEATHER_BY_LABEL: ReadonlyMap<string, WeatherType> = new Map([
+export const WEATHER_BY_LABEL: ReadonlyMap<string, WeatherType> = new Map([
   ['SOLEIL', 'SUNNY'],
   ['PLUIE', 'RAIN'],
   ['NEIGE', 'SNOW'],
   ['NUAGEUX', 'CLOUDY'],
 ]);
 
-const DAY_BY_LABEL: ReadonlyMap<string, DayOfWeek> = new Map([
+export const DAY_BY_LABEL: ReadonlyMap<string, DayOfWeek> = new Map([
   ['LUNDI', 'MONDAY'],
   ['MARDI', 'TUESDAY'],
   ['MERCREDI', 'WEDNESDAY'],

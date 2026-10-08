@@ -17,6 +17,7 @@ const DEFAULT_LOCAL_TRACKS = [
 const MIN_TIMEOUT_MS = 100;
 const MAX_TIMEOUT_MS = 60_000;
 const DEFAULT_TIMEOUT_MS = 2000;
+const DEFAULT_PORT = 3000;
 
 function parseList<T extends string>(
   name: string,
@@ -36,6 +37,17 @@ function parseList<T extends string>(
     throw new ConfigError(`${name} must not contain duplicates`);
   }
   return known;
+}
+
+function parsePort(raw: string | undefined): number {
+  if (raw === undefined) {
+    return DEFAULT_PORT;
+  }
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 0 || value > 65_535) {
+    throw new ConfigError('PORT must be an integer between 0 and 65535');
+  }
+  return value;
 }
 
 function parseTimeout(raw: string | undefined): number {
@@ -92,6 +104,7 @@ export function loadConfig(env: Environment): AppConfig {
       fallbackTrack: { title: firstLocal?.title ?? '', artist: firstLocal?.artist ?? '' },
       preferredChannel: 'EMAIL',
     },
+    server: { port: parsePort(env['PORT']) },
     http: { maxRetries: 1 },
     breaker: { failureThreshold: 3, halfOpenAfterMs: 30_000 },
     music: {

@@ -53,6 +53,18 @@ paths:
                       - { channel: EMAIL, succeeded: false, cause: delivery-error }
                       - { channel: SMS, succeeded: false, cause: delivery-error }
                       - { channel: PUSH, succeeded: false, cause: delivery-error }
+        '413':
+          description: Corps de requête supérieur à 16 Kio.
+        '500':
+          description: Erreur inattendue (bug) ; la cause est journalisée côté serveur.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [error, message]
+                properties:
+                  error: { type: string, enum: [INTERNAL_ERROR] }
+                  message: { type: string }
         '400':
           description: Entrée invalide (`InvalidInputError`) ; aucun fournisseur n'est appelé.
           content:
