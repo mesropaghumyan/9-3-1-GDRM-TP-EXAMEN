@@ -44,7 +44,7 @@ development_status:
   1-6-déclenchement-d-un-réveil-nominal: done
   epic-1-retrospective: optional
 
-  epic-2: backlog
+  epic-2: done
   2-1-client-http-et-briques-de-résilience: done
   2-2-adapter-itunes: done
   2-3-adapter-musicbrainz: done
