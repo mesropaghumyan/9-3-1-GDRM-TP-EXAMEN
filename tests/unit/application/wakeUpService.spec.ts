@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  ChannelDelivery,
   ChannelResolver,
   TrackSelectionPolicy,
   WakeUpService,
@@ -54,7 +55,11 @@ function build(options: { prefs?: UserPreferences; failing?: string[]; skipped?:
     new FakeUserPreferencesProvider(new Map([['alice', options.prefs ?? preferences]])),
     new TrackSelectionPolicy(),
     resolver,
-    new ChannelResolver(channels, ['EMAIL', 'SMS', 'PUSH'], logger),
+    new ChannelDelivery(
+      new ChannelResolver(channels, ['EMAIL', 'SMS', 'PUSH'], logger),
+      logger,
+      1000,
+    ),
     logger,
   );
   return { service, logger, channels, resolver };
