@@ -1,0 +1,163 @@
+openapi: 3.0.3
+info:
+  title: Réveil musical
+  version: 0.1.0
+  description: >
+    Déclenche un réveil musical : le morceau est choisi selon la météo, puis l'utilisateur est
+    prévenu sur son canal préféré. Jour et météo sont fournis en entrée (aucun appel météo externe).
+    Toute panne de fournisseur ou de canal est reportée dans le corps de la réponse (`FAILED`),
+    jamais par un silence ni par une erreur serveur.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: http://localhost:3000
+    description: Développement local
+paths:
+  /wake-ups:
+    post:
+      operationId: triggerWakeUp
+      summary: Déclencher un réveil
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WakeUpRequest'
+            examples:
+              ensoleille:
+                value: { userId: alice, day: LUNDI, weather: SOLEIL }
+      responses:
+        '200':
+          description: Le réveil a été traité. Lire `status` pour distinguer réveil émis et échec explicite.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WakeUpResult'
+              examples:
+                livre:
+                  value:
+                    status: DELIVERED
+                    degraded: false
+                    track: { title: Here Comes the Sun, artist: The Beatles }
+                    trackSource: WEATHER
+                    providerName: itunes
+                    channel: EMAIL
+                    attempts: [{ channel: EMAIL, succeeded: true }]
+                echec:
+                  value:
+                    status: FAILED
+                    degraded: true
+                    reason: ALL_CHANNELS_FAILED
+                    attempts:
+                      - { channel: EMAIL, succeeded: false, cause: delivery-error }
+                      - { channel: SMS, succeeded: false, cause: delivery-error }
+                      - { channel: PUSH, succeeded: false, cause: delivery-error }
+        '400':
+          description: Entrée invalide (`InvalidInputError`) ; aucun fournisseur n'est appelé.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                jourInconnu:
+                  value: { error: INVALID_INPUT, message: "jour inconnu : FUNDAY" }
+  /health:
+    get:
+      operationId: getHealth
+      summary: Vérifier que le service répond
+      responses:
+        '200':
+          description: Service disponible.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status]
+                properties:
+                  status: { type: string, enum: [UP] }
+  /openapi.yaml:
+    get:
+      operationId: getOpenApi
+      summary: Contrat OpenAPI de ce service
+      responses:
+        '200':
+          description: Ce document.
+          content:
+            application/yaml:
+              schema: { type: string }
+components:
+  schemas:
+    WakeUpRequest:
+      type: object
+      required: [userId, day, weather]
+      additionalProperties: false
+      properties:
+        userId: { type: string, minLength: 1, description: Identifiant non vide et non blanc. }
+        day:
+          type: string
+          enum: [LUNDI, MARDI, MERCREDI, JEUDI, VENDREDI, SAMEDI, DIMANCHE]
+        weather:
+          type: string
+          enum: [SOLEIL, PLUIE, NEIGE, NUAGEUX]
+    Track:
+      type: object
+      required: [title, artist]
+      additionalProperties: false
+      properties:
+        title: { type: string }
+        artist: { type: string }
+    ChannelKind:
+      type: string
+      enum: [EMAIL, SMS, PUSH]
+    TrackSource:
+      type: string
+      enum: [WEATHER, USER_FALLBACK, LOCAL_FALLBACK]
+    ChannelAttempt:
+      type: object
+      required: [channel, succeeded]
+      properties:
+        channel: { $ref: '#/components/schemas/ChannelKind' }
+        succeeded: { type: boolean }
+        cause: { type: string }
+    WakeUpResult:
+      oneOf:
+        - $ref: '#/components/schemas/WakeUpDelivered'
+        - $ref: '#/components/schemas/WakeUpFailed'
+      discriminator:
+        propertyName: status
+        mapping:
+          DELIVERED: '#/components/schemas/WakeUpDelivered'
+          FAILED: '#/components/schemas/WakeUpFailed'
+    WakeUpDelivered:
+      type: object
+      required: [status, degraded, track, trackSource, providerName, channel, attempts]
+      properties:
+        status: { type: string, enum: [DELIVERED] }
+        degraded: { type: boolean }
+        track: { $ref: '#/components/schemas/Track' }
+        trackSource: { $ref: '#/components/schemas/TrackSource' }
+        providerName: { type: string }
+        channel: { $ref: '#/components/schemas/ChannelKind' }
+        attempts:
+          type: array
+          items: { $ref: '#/components/schemas/ChannelAttempt' }
+    WakeUpFailed:
+      type: object
+      required: [status, degraded, reason, attempts]
+      properties:
+        status: { type: string, enum: [FAILED] }
+        degraded: { type: boolean, enum: [true] }
+        reason: { type: string, enum: [USER_NOT_FOUND, ALL_CHANNELS_FAILED, CANCELLED] }
+        track: { $ref: '#/components/schemas/Track' }
+        trackSource: { $ref: '#/components/schemas/TrackSource' }
+        providerName: { type: string }
+        attempts:
+          type: array
+          items: { $ref: '#/components/schemas/ChannelAttempt' }
+    ErrorResponse:
+      type: object
+      required: [error, message]
+      properties:
+        error: { type: string, enum: [INVALID_INPUT] }
+        message: { type: string }
