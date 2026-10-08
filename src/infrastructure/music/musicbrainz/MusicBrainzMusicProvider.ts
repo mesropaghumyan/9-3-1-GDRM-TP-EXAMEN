@@ -42,13 +42,13 @@ export class MusicBrainzMusicProvider implements MusicProvider {
       throw new MusicProviderUnavailableError('musicbrainz pacing limit reached');
     }
 
-    const track = this.toTrack(await this.fetch(term, signal));
+    const track = this.toTrack(await this.requestJson(term, signal));
     this.breaker.recordSuccess();
     this.cache.set(term, track);
     return track;
   }
 
-  private async fetch(term: string, signal: AbortSignal | undefined): Promise<HttpResponse> {
+  private async requestJson(term: string, signal: AbortSignal | undefined): Promise<HttpResponse> {
     const url = `${this.config.baseUrl}?${new URLSearchParams({ query: term, fmt: 'json' }).toString()}`;
     try {
       return await this.http.getJson(url, {

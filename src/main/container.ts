@@ -65,6 +65,34 @@ import {
 } from '../infrastructure/tokens.js';
 
 /**
+ * Declared lifetimes, checked by tests/architecture: a singleton must never depend on a transient.
+ * MUSIC_PROVIDER stands for all its registrations (local, iTunes, MusicBrainz are singletons).
+ */
+export const SINGLETON_TOKENS: readonly unknown[] = [
+  CLOCK,
+  LOG_WRITER,
+  LOGGER,
+  NOTIFICATION_SINK,
+  HTTP_CLIENT,
+  USER_PREFERENCES_PROVIDER,
+  EMAIL_CLIENT,
+  SMS_GATEWAY,
+  PUSH_SERVICE,
+  MUSIC_PROVIDER,
+  LocalFallbackMusicProvider,
+];
+
+export const TRANSIENT_TOKENS: readonly unknown[] = [
+  WAKE_UP_USE_CASE,
+  TRACK_RESOLVER,
+  TRACK_SELECTION_POLICY,
+  CHANNEL_DELIVERY,
+  PREFERENCES_RESOLVER,
+  NOTIFICATION_CHANNEL_RESOLVER,
+  NOTIFICATION_CHANNEL,
+];
+
+/**
  * The only file that wires the object graph (and the only one allowed to `new` implementations).
  * Lifetimes: stateless shared services are singletons; use-case level classes are transient.
  * A singleton never depends on a transient one.

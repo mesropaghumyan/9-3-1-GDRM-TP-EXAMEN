@@ -42,13 +42,13 @@ export class ITunesMusicProvider implements MusicProvider {
       throw new MusicProviderUnavailableError('itunes quota reached');
     }
 
-    const track = this.toTrack(await this.fetch(term, signal));
+    const track = this.toTrack(await this.requestJson(term, signal));
     this.breaker.recordSuccess();
     this.cache.set(term, track);
     return track;
   }
 
-  private async fetch(term: string, signal: AbortSignal | undefined): Promise<HttpResponse> {
+  private async requestJson(term: string, signal: AbortSignal | undefined): Promise<HttpResponse> {
     const url = `${this.config.baseUrl}?${new URLSearchParams({ term, media: 'music', limit: '5' }).toString()}`;
     try {
       return await this.http.getJson(url, {
