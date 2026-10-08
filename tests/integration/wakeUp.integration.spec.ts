@@ -120,3 +120,18 @@ describe('Channel added in the container', () => {
     expect(fake.sent).toHaveLength(1);
   });
 });
+
+describe('Unknown user (real container)', () => {
+  it('ghost -> FAILED USER_NOT_FOUND, error logged, no simulated delivery', async () => {
+    const { container, writer } = setup();
+
+    const result = await container
+      .resolve<WakeUpUseCase>(WAKE_UP_USE_CASE)
+      .trigger(createUserId('ghost'), 'MONDAY', 'SUNNY');
+
+    expect(result).toMatchObject({ status: 'FAILED', reason: 'USER_NOT_FOUND' });
+    const events = writer.entries().map((entry) => entry['event']);
+    expect(events).toContain('wakeup.failed');
+    expect(events).not.toContain('notification.simulated');
+  });
+});

@@ -2,3 +2,4 @@
 export const TRACK_SELECTION_POLICY = Symbol('TrackSelectionPolicy');
 export const WAKE_UP_USE_CASE = Symbol('WakeUpUseCase');
 export const CHANNEL_DELIVERY = Symbol('ChannelDelivery');
+export const PREFERENCES_RESOLVER = Symbol('PreferencesResolver');

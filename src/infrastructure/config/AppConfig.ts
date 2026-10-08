@@ -1,4 +1,4 @@
-import type { ChannelKind, Track } from '../../domain/index.js';
+import type { ChannelKind, Track, UserPreferences } from '../../domain/index.js';
 
 export type ProviderName = 'itunes' | 'musicbrainz' | 'local';
 
@@ -33,6 +33,8 @@ export interface MusicBrainzConfig {
 }
 
 export interface AppConfig {
+  /** Used when the preferences service is unavailable (RG-10). */
+  readonly defaultPreferences: UserPreferences;
   readonly http: HttpConfig;
   readonly breaker: BreakerConfig;
   readonly music: {

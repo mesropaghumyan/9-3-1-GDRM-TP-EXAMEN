@@ -2,16 +2,19 @@ import { describe, expect, it } from 'vitest';
 import {
   ChannelDelivery,
   ChannelResolver,
+  PreferencesResolver,
   TrackSelectionPolicy,
   WakeUpService,
 } from '../../../src/application/index.js';
 import {
   createTrack,
   createUserId,
+  PreferencesUnavailableError,
   type ResolvedTrack,
   type TrackQuery,
   type TrackResolver,
   type UserPreferences,
+  type UserPreferencesProvider,
   type WeatherType,
 } from '../../../src/domain/index.js';
 import { FakeNotificationChannel } from '../../fakes/FakeNotificationChannel.js';
@@ -45,14 +48,32 @@ class StubResolver implements TrackResolver {
   }
 }
 
-function build(options: { prefs?: UserPreferences; failing?: string[]; skipped?: number } = {}) {
+const defaultPreferences: UserPreferences = {
+  trackByWeather: new Map(),
+  fallbackTrack: { title: 'Default' },
+  preferredChannel: 'EMAIL',
+};
+
+function build(
+  options: {
+    prefs?: UserPreferences;
+    provider?: UserPreferencesProvider;
+    failing?: string[];
+    skipped?: number;
+  } = {},
+) {
   const logger = new RecordingLogger();
   const channels = (['EMAIL', 'SMS', 'PUSH'] as const).map(
     (kind) => new FakeNotificationChannel(kind, options.failing?.includes(kind) ?? false),
   );
   const resolver = new StubResolver(options.skipped);
   const service = new WakeUpService(
-    new FakeUserPreferencesProvider(new Map([['alice', options.prefs ?? preferences]])),
+    new PreferencesResolver(
+      options.provider ??
+        new FakeUserPreferencesProvider(new Map([['alice', options.prefs ?? preferences]])),
+      defaultPreferences,
+      logger,
+    ),
     new TrackSelectionPolicy(),
     resolver,
     new ChannelDelivery(
@@ -153,5 +174,39 @@ describe('WakeUpService.trigger', () => {
       succeeded: false,
       cause: 'unknown-error',
     });
+  });
+});
+
+describe('WakeUpService.trigger with preference failures', () => {
+  it('unknown user -> FAILED USER_NOT_FOUND logged in error, nothing sent, no exception', async () => {
+    const { service, logger, channels } = build();
+
+    const result = await service.trigger(createUserId('ghost'), 'MONDAY', 'SUNNY');
+
+    expect(result).toMatchObject({
+      status: 'FAILED',
+      reason: 'USER_NOT_FOUND',
+      degraded: true,
+      attempts: [],
+    });
+    expect(logger.events('error')).toEqual(['wakeup.failed']);
+    expect(channels.every((channel) => channel.sent.length === 0)).toBe(true);
+  });
+
+  it('preferences service down -> default preferences, DELIVERED degraded, switch logged', async () => {
+    const down: UserPreferencesProvider = {
+      get: () => Promise.reject(new PreferencesUnavailableError('service down')),
+    };
+    const { service, logger } = build({ provider: down });
+
+    const result = await service.trigger(alice, 'MONDAY', 'SUNNY');
+
+    expect(result).toMatchObject({
+      status: 'DELIVERED',
+      degraded: true,
+      channel: 'EMAIL',
+      trackSource: 'USER_FALLBACK',
+    });
+    expect(logger.events('warn')).toContain('preferences.unavailable');
   });
 });
