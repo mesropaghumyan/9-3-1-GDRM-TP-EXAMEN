@@ -64,5 +64,5 @@ development_status:
   epic-4-retrospective: optional
 
   epic-5: backlog
-  5-1-endpoint-post-wake-ups-conforme-à-openapi: backlog
+  5-1-endpoint-post-wake-ups-conforme-à-openapi: done
   epic-5-retrospective: optional

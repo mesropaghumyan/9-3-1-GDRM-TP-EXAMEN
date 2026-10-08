@@ -9,6 +9,7 @@ describe('loadConfig', () => {
     expect(config.music.localTracks.length).toBeGreaterThanOrEqual(3);
     expect(config.notifications.channelFallbackOrder).toEqual(['EMAIL', 'SMS', 'PUSH']);
     expect(config.notifications.sendTimeoutMs).toBe(2000);
+    expect(config.server.port).toBe(3000);
     expect(config.http.maxRetries).toBe(1);
     expect(config.defaultPreferences).toMatchObject({ preferredChannel: 'EMAIL' });
     expect(config.defaultPreferences.fallbackTrack.title).toBe(config.music.localTracks[0]?.title);
@@ -45,6 +46,8 @@ describe('loadConfig', () => {
     ['empty provider order', { MUSIC_PROVIDER_ORDER: '' }],
     ['unknown channel', { CHANNEL_FALLBACK_ORDER: 'EMAIL,FAX' }],
     ['blank user agent', { MUSICBRAINZ_USER_AGENT: '  ' }],
+    ['port out of range', { PORT: '70000' }],
+    ['non numeric port', { PORT: 'web' }],
     ['non numeric timeout', { NOTIFICATION_TIMEOUT_MS: 'fast' }],
     ['timeout too small', { NOTIFICATION_TIMEOUT_MS: '5' }],
     ['timeout too large', { NOTIFICATION_TIMEOUT_MS: '600000' }],
