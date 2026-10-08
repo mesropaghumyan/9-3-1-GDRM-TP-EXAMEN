@@ -34,4 +34,5 @@ Versions issues de `npm ls` / `npm outdated`, licences issues de `license-checke
 
 - **Production** (3 paquets, voir [docs/licenses.csv](docs/licenses.csv)) : Apache-2.0 (`reflect-metadata`), MIT (`tsyringe`), 0BSD (`tslib@1.14.1`). Aucune licence hors matrice : `npm run audit:licenses` est vert.
 - **Développement** (liste complète dans [docs/licenses-dev.csv](docs/licenses-dev.csv)) : majoritairement MIT, ISC, Apache-2.0, BSD, BlueOak-1.0.0, CC0-1.0. Exceptions relevées : `lightningcss` et `lightningcss-darwin-arm64` (MPL-2.0, via `vite`, voir [ADR 0001](docs/adr/0001-licence-mpl-2-0-lightningcss-devdependency.md)) ; `argparse` (Python-2.0), `spdx-exceptions` / `spdx-ranges` (CC-BY-3.0), `expand-template` (MIT OR WTFPL), `rc` (BSD-2-Clause OR MIT OR Apache-2.0) : outils de développement uniquement, non livrés.
+- Le projet lui-même est sous licence MIT ([LICENSE](LICENSE)).
 - `npm audit --omit=dev --audit-level=high` : 0 vulnérabilité. SBOM de production : [sbom.cdx.json](sbom.cdx.json).
