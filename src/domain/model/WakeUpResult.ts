@@ -1,0 +1,28 @@
+import type { ChannelAttempt } from './ChannelAttempt.js';
+import type { ChannelKind } from './ChannelKind.js';
+import type { Track } from './Track.js';
+import type { TrackSource } from './TrackSource.js';
+
+export type FailureReason = 'USER_NOT_FOUND' | 'ALL_CHANNELS_FAILED' | 'CANCELLED';
+
+export interface WakeUpDelivered {
+  readonly status: 'DELIVERED';
+  readonly degraded: boolean;
+  readonly track: Track;
+  readonly trackSource: TrackSource;
+  readonly providerName: string;
+  readonly channel: ChannelKind;
+  readonly attempts: readonly ChannelAttempt[];
+}
+
+export interface WakeUpFailed {
+  readonly status: 'FAILED';
+  readonly degraded: true;
+  readonly reason: FailureReason;
+  readonly track?: Track;
+  readonly trackSource?: TrackSource;
+  readonly providerName?: string;
+  readonly attempts: readonly ChannelAttempt[];
+}
+
+export type WakeUpResult = WakeUpDelivered | WakeUpFailed;
