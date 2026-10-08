@@ -29,6 +29,7 @@ function parseList<T extends string>(
     return fallback;
   }
   const items = raw.split(',').map((item) => item.trim());
+  // Why: `includes` is typed on the narrow union; widening to string[] is safe, the guard re-narrows.
   const known = items.filter((item): item is T => (allowed as readonly string[]).includes(item));
   if (known.length !== items.length || items.length === 0) {
     throw new ConfigError(`${name} must be a comma-separated list of: ${allowed.join(', ')}`);

@@ -10,6 +10,7 @@ import {
   TrackSelectionPolicy,
   WAKE_UP_USE_CASE,
   WakeUpService,
+  type WakeUpUseCase,
 } from '../application/index.js';
 import {
   CLOCK,
@@ -30,6 +31,12 @@ import {
   type NotificationChannelResolver,
   type UserPreferencesProvider,
 } from '../domain/index.js';
+import {
+  WAKE_UP_HANDLER,
+  WAKE_UP_HTTP_API,
+  WakeUpHandler,
+  WakeUpHttpApi,
+} from '../presentation/index.js';
 import { SystemClock } from '../infrastructure/clock/index.js';
 import { ConfigError, type AppConfig } from '../infrastructure/config/index.js';
 import {
@@ -97,7 +104,7 @@ export const TRANSIENT_TOKENS: readonly unknown[] = [
  * Lifetimes: stateless shared services are singletons; use-case level classes are transient.
  * A singleton never depends on a transient one.
  */
-export function buildContainer(config: AppConfig): DependencyContainer {
+export function buildContainer(config: AppConfig, openApiDocument = ''): DependencyContainer {
   const c = container.createChildContainer();
 
   // Singletons: clock, log chain, sink, preferences, local provider, mocked clients.
@@ -189,6 +196,17 @@ export function buildContainer(config: AppConfig): DependencyContainer {
   });
   c.register(TRACK_SELECTION_POLICY, { useClass: TrackSelectionPolicy });
   c.register(WAKE_UP_USE_CASE, { useClass: WakeUpService });
+  c.register(WAKE_UP_HANDLER, {
+    useFactory: (d) => new WakeUpHandler(d.resolve<WakeUpUseCase>(WAKE_UP_USE_CASE)),
+  });
+  c.register(WAKE_UP_HTTP_API, {
+    useFactory: (d) =>
+      new WakeUpHttpApi(
+        d.resolve<WakeUpHandler>(WAKE_UP_HANDLER),
+        d.resolve<Logger>(LOGGER),
+        openApiDocument,
+      ),
+  });
 
   return c;
 }

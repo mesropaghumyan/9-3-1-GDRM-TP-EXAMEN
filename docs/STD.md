@@ -426,3 +426,19 @@ Chaque story suit le cycle de `CLAUDE.md` §5.2 (TDD, DoD verte, statut BMAD).
 6. Présentation sans serveur HTTP (§6).
 7. `STD.md` tient lieu de `docs/architecture.md` cité dans `CLAUDE.md` §1.2 : mettre `CLAUDE.md` à jour ou renommer.
 8. Épinglage de TypeScript 6.0.3 et Node 24 (§11).
+
+## 9. Écarts constatés à l'implémentation (mis à jour le 2026-10-08)
+
+Cette section corrige le document d'architecture initial là où l'implémentation a dû s'en écarter. Elle fait foi sur les sections 3 à 7.
+
+| Sujet | Prévu | Réalisé | Raison |
+| --- | --- | --- | --- |
+| `ResolvedTrack` | `{ track, providerName, isLocalFallback }` | `{ track, providerName, skippedProviders, isLocalFallback }` | `degraded` (RG-11) dépend du nombre de fournisseurs écartés ; `isLocalFallback` n'est vrai que si la liste locale répond après au moins un échec. |
+| `WakeUpService` | 5 paramètres dont `USER_PREFERENCES_PROVIDER` et `NOTIFICATION_CHANNEL_RESOLVER` | `PreferencesResolver`, `TrackSelectionPolicy`, `TrackResolver`, `ChannelDelivery`, `Logger` | Tenir la limite de 5 paramètres en ajoutant timeout par canal et préférences par défaut. |
+| `PreferencesResolver` (application) | absent | Enveloppe le port : utilisateur inconnu = résultat, service indisponible = préférences par défaut (`AppConfig.defaultPreferences`), dégradé | RG-09, RG-10. Construit par `useFactory`. |
+| `ChannelDelivery` (application) | boucle dans `WakeUpService` | Collaborateur : un essai par canal, timeout par tentative (`AbortSignal.timeout`), arrêt au premier succès, annulation | AD-9 ; construit par `useFactory` (timeout issu de la config). |
+| `FailureReason` | `USER_NOT_FOUND`, `ALL_CHANNELS_FAILED`, `CANCELLED` | + `NO_TRACK_AVAILABLE` | Aucune exception de panne ne doit sortir de `trigger` si la chaîne musicale est mal configurée. |
+| Mocks de canaux | « non exportés » | Exportés par l'`index` de leur module | Le composition root doit les enregistrer. Les DTO tiers (iTunes, MusicBrainz) restent privés. |
+| Ordre par défaut des fournisseurs | `itunes, musicbrainz, local` | idem (`MUSIC_PROVIDER_ORDER`) | — |
+| Présentation HTTP | « CLI/HTTP » | CLI (`<userId> <jour> <météo>`) et serveur `node:http` natif (`npm run serve`) conforme à `docs/api/openapi.yaml` ; `WakeUpHandler` et `WakeUpHttpApi` construits dans `container.ts` | ADR 0002. |
+| Config | `loadConfig(env)` | + `PORT`, `MUSICBRAINZ_USER_AGENT`, `MUSIC_PROVIDER_ORDER`, `CHANNEL_FALLBACK_ORDER`, `NOTIFICATION_TIMEOUT_MS` | Toute lecture d'environnement reste dans `src/main`. |
