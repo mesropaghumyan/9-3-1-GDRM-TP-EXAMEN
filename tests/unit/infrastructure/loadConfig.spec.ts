@@ -9,6 +9,8 @@ describe('loadConfig', () => {
     expect(config.music.localTracks.length).toBeGreaterThanOrEqual(3);
     expect(config.notifications.channelFallbackOrder).toEqual(['EMAIL', 'SMS', 'PUSH']);
     expect(config.notifications.sendTimeoutMs).toBe(2000);
+    expect(config.http.maxRetries).toBe(1);
+    expect(config.breaker).toEqual({ failureThreshold: 3, halfOpenAfterMs: 30_000 });
   });
 
   it('valid overrides -> applied', () => {

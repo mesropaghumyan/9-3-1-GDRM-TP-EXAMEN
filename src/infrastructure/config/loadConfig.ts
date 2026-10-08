@@ -71,6 +71,8 @@ export function loadConfig(env: Environment): AppConfig {
     CHANNEL_KINDS,
   );
   const config: AppConfig = {
+    http: { maxRetries: 1 },
+    breaker: { failureThreshold: 3, halfOpenAfterMs: 30_000 },
     music: { providerOrder, localTracks: DEFAULT_LOCAL_TRACKS },
     notifications: {
       channelFallbackOrder,
