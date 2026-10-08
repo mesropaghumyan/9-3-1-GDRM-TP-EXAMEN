@@ -51,6 +51,20 @@ function parseTimeout(raw: string | undefined): number {
   return value;
 }
 
+// Why: the contact in the User-Agent must be provided by the operator, never hard-coded in logic.
+const DEFAULT_USER_AGENT =
+  'ReveilMusical/0.1.0 ( https://github.com/mesropaghumyan/9-3-1-GDRM-TP-EXAMEN )';
+
+function parseUserAgent(raw: string | undefined): string {
+  const value = raw === undefined ? DEFAULT_USER_AGENT : raw.trim();
+  if (value === '') {
+    throw new ConfigError(
+      'MUSICBRAINZ_USER_AGENT must not be empty (MusicBrainz rejects anonymous clients)',
+    );
+  }
+  return value;
+}
+
 /** Read once by the composition root; the result is immutable and injected as typed objects. */
 export function loadConfig(env: Environment): AppConfig {
   const providerOrder = parseList(
@@ -82,6 +96,14 @@ export function loadConfig(env: Environment): AppConfig {
         ttlMs: 3_600_000,
         maxRequests: 20,
         windowMs: 60_000,
+      },
+      musicbrainz: {
+        baseUrl: 'https://musicbrainz.org/ws/2/recording',
+        userAgent: parseUserAgent(env['MUSICBRAINZ_USER_AGENT']),
+        timeoutMs: 3000,
+        ttlMs: 86_400_000,
+        maxRequests: 1,
+        windowMs: 1000,
       },
     },
     notifications: {

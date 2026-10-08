@@ -25,6 +25,13 @@ describe('loadConfig', () => {
     expect(config.notifications.sendTimeoutMs).toBe(500);
   });
 
+  it('user agent -> overridable and never empty by default', () => {
+    expect(loadConfig({}).music.musicbrainz.userAgent).not.toBe('');
+    expect(
+      loadConfig({ MUSICBRAINZ_USER_AGENT: 'App/1 ( me@x.org )' }).music.musicbrainz.userAgent,
+    ).toBe('App/1 ( me@x.org )');
+  });
+
   it('result -> frozen', () => {
     expect(Object.isFrozen(loadConfig({}))).toBe(true);
   });
@@ -35,6 +42,7 @@ describe('loadConfig', () => {
     ['duplicate provider', { MUSIC_PROVIDER_ORDER: 'local,local' }],
     ['empty provider order', { MUSIC_PROVIDER_ORDER: '' }],
     ['unknown channel', { CHANNEL_FALLBACK_ORDER: 'EMAIL,FAX' }],
+    ['blank user agent', { MUSICBRAINZ_USER_AGENT: '  ' }],
     ['non numeric timeout', { NOTIFICATION_TIMEOUT_MS: 'fast' }],
     ['timeout too small', { NOTIFICATION_TIMEOUT_MS: '5' }],
     ['timeout too large', { NOTIFICATION_TIMEOUT_MS: '600000' }],

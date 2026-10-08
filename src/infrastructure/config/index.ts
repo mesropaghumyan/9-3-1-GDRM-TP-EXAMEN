@@ -3,6 +3,7 @@ export type {
   BreakerConfig,
   HttpConfig,
   ItunesConfig,
+  MusicBrainzConfig,
   ProviderName,
 } from './AppConfig.js';
 export { ConfigError } from './ConfigError.js';
