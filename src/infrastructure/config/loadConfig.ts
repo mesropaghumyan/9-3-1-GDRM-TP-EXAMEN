@@ -84,7 +84,14 @@ export function loadConfig(env: Environment): AppConfig {
     CHANNEL_KINDS,
     CHANNEL_KINDS,
   );
+  const [firstLocal] = DEFAULT_LOCAL_TRACKS;
   const config: AppConfig = {
+    // Why: the first local track guarantees the default preferences always resolve to a track.
+    defaultPreferences: {
+      trackByWeather: new Map(),
+      fallbackTrack: { title: firstLocal?.title ?? '', artist: firstLocal?.artist ?? '' },
+      preferredChannel: 'EMAIL',
+    },
     http: { maxRetries: 1 },
     breaker: { failureThreshold: 3, halfOpenAfterMs: 30_000 },
     music: {

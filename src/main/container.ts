@@ -4,6 +4,8 @@ import {
   ChannelDelivery,
   ChannelResolver,
   FallbackMusicProvider,
+  PREFERENCES_RESOLVER,
+  PreferencesResolver,
   TRACK_SELECTION_POLICY,
   TrackSelectionPolicy,
   WAKE_UP_USE_CASE,
@@ -26,6 +28,7 @@ import {
   type MusicProvider,
   type NotificationChannel,
   type NotificationChannelResolver,
+  type UserPreferencesProvider,
 } from '../domain/index.js';
 import { SystemClock } from '../infrastructure/clock/index.js';
 import { ConfigError, type AppConfig } from '../infrastructure/config/index.js';
@@ -124,6 +127,14 @@ export function buildContainer(config: AppConfig): DependencyContainer {
       new ChannelResolver(
         d.resolveAll<NotificationChannel>(NOTIFICATION_CHANNEL),
         config.notifications.channelFallbackOrder,
+        d.resolve<Logger>(LOGGER),
+      ),
+  });
+  c.register(PREFERENCES_RESOLVER, {
+    useFactory: (d) =>
+      new PreferencesResolver(
+        d.resolve<UserPreferencesProvider>(USER_PREFERENCES_PROVIDER),
+        config.defaultPreferences,
         d.resolve<Logger>(LOGGER),
       ),
   });

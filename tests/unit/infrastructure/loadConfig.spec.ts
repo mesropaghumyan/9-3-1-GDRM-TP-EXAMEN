@@ -10,6 +10,8 @@ describe('loadConfig', () => {
     expect(config.notifications.channelFallbackOrder).toEqual(['EMAIL', 'SMS', 'PUSH']);
     expect(config.notifications.sendTimeoutMs).toBe(2000);
     expect(config.http.maxRetries).toBe(1);
+    expect(config.defaultPreferences).toMatchObject({ preferredChannel: 'EMAIL' });
+    expect(config.defaultPreferences.fallbackTrack.title).toBe(config.music.localTracks[0]?.title);
     expect(config.breaker).toEqual({ failureThreshold: 3, halfOpenAfterMs: 30_000 });
   });
 

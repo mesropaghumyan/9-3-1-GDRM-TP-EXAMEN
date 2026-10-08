@@ -148,7 +148,7 @@ components:
       properties:
         status: { type: string, enum: [FAILED] }
         degraded: { type: boolean, enum: [true] }
-        reason: { type: string, enum: [USER_NOT_FOUND, ALL_CHANNELS_FAILED, CANCELLED] }
+        reason: { type: string, enum: [USER_NOT_FOUND, ALL_CHANNELS_FAILED, NO_TRACK_AVAILABLE, CANCELLED] }
         track: { $ref: '#/components/schemas/Track' }
         trackSource: { $ref: '#/components/schemas/TrackSource' }
         providerName: { type: string }

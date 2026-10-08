@@ -76,7 +76,7 @@ Correspondance interne de la météo : `SOLEIL→SUNNY`, `PLUIE→RAIN`, `NEIGE�
 | `providerName` | fournisseur qui a répondu | idem si connu |
 | `channel` | canal effectif | absent |
 | `attempts` | liste des tentatives de canal (canal, succès/échec) | idem |
-| `reason` | absent | `USER_NOT_FOUND`, `ALL_CHANNELS_FAILED` ou `CANCELLED` |
+| `reason` | absent | `USER_NOT_FOUND`, `ALL_CHANNELS_FAILED`, `NO_TRACK_AVAILABLE` (aucun fournisseur, y compris la liste locale, n'a pu répondre : cas de configuration invalide) ou `CANCELLED` |
 
 ## 5. Règles de gestion
 

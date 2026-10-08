@@ -3,7 +3,8 @@ import type { ChannelKind } from './ChannelKind.js';
 import type { Track } from './Track.js';
 import type { TrackSource } from './TrackSource.js';
 
-export type FailureReason = 'USER_NOT_FOUND' | 'ALL_CHANNELS_FAILED' | 'CANCELLED';
+export type FailureReason =
+  'USER_NOT_FOUND' | 'ALL_CHANNELS_FAILED' | 'NO_TRACK_AVAILABLE' | 'CANCELLED';
 
 export interface WakeUpDelivered {
   readonly status: 'DELIVERED';

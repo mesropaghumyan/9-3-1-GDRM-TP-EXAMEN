@@ -53,7 +53,7 @@ development_status:
 
   epic-3: backlog
   3-1-repli-entre-canaux-et-échec-explicite: done
-  3-2-utilisateur-inconnu-et-préférences-indisponibles: backlog
+  3-2-utilisateur-inconnu-et-préférences-indisponibles: done
   3-3-annulation-et-garantie-anti-silence: backlog
   epic-3-retrospective: optional
 
