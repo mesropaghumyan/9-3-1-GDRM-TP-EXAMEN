@@ -15,6 +15,7 @@ export default tseslint.config(
         { 'ts-expect-error': 'allow-with-description', 'ts-ignore': true },
       ],
       'no-console': 'error',
+      'no-empty': 'error',
       // Why: dépendances implicites interdites (CLAUDE.md §0.5) ; le temps passe par le port Clock.
       'no-restricted-syntax': [
         'error',

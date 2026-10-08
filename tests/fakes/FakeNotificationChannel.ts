@@ -7,13 +7,15 @@ import {
 
 export class FakeNotificationChannel implements NotificationChannel {
   readonly sent: WakeUpNotification[] = [];
+  readonly signals: (AbortSignal | undefined)[] = [];
 
   constructor(
     readonly kind: ChannelKind,
     private readonly fails = false,
   ) {}
 
-  send(notification: WakeUpNotification): Promise<void> {
+  send(notification: WakeUpNotification, signal?: AbortSignal): Promise<void> {
+    this.signals.push(signal);
     if (this.fails) {
       return Promise.reject(new NotificationDeliveryError(`${this.kind} down`));
     }
