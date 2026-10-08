@@ -12,6 +12,4 @@
 
 ## Revue QA
 
-- [ ] Critères d'acceptation validés
-- [ ] Non-régression et tests d'architecture verts
-- [ ] Aucun appel réseau réel dans les tests
+Automatique : la CI (`verify`) rejoue la Definition of Done ; la pull request est fusionnée (squash) dès qu'elle est verte.

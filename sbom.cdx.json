@@ -1,0 +1,309 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "version": 1,
+  "serialNumber": "urn:uuid:58b55aac-c02a-437b-8fa3-102adf5071ef",
+  "metadata": {
+    "timestamp": "2026-10-08T10:11:21.082Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "npm",
+          "version": "11.19.0"
+        },
+        {
+          "type": "application",
+          "name": "cyclonedx-npm",
+          "group": "@cyclonedx",
+          "version": "6.0.1",
+          "author": "Jan Kowalleck",
+          "description": "Create CycloneDX Software Bill of Materials (SBOM) from NPM projects.",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "externalReferences": [
+            {
+              "url": "git+https://github.com/CycloneDX/cyclonedx-node-npm.git",
+              "type": "vcs",
+              "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-node-npm#readme",
+              "type": "website",
+              "comment": "as detected from PackageJson property \"homepage\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-node-npm/issues",
+              "type": "issue-tracker",
+              "comment": "as detected from PackageJson property \"bugs.url\""
+            }
+          ],
+          "properties": [
+            {
+              "name": "cdx:npm:package:constraint:engine:node",
+              "value": ">=20.18.0"
+            },
+            {
+              "name": "cdx:npm:package:constraint:engine:npm",
+              "value": ">=9"
+            }
+          ]
+        },
+        {
+          "type": "library",
+          "name": "cyclonedx-library",
+          "group": "@cyclonedx",
+          "version": "10.3.0",
+          "author": "Jan Kowalleck",
+          "description": "Core functionality of CycloneDX for JavaScript (Node.js or WebBrowser).",
+          "licenses": [
+            {
+              "license": {
+                "id": "Apache-2.0"
+              }
+            }
+          ],
+          "externalReferences": [
+            {
+              "url": "git+https://github.com/CycloneDX/cyclonedx-javascript-library.git",
+              "type": "vcs",
+              "comment": "as detected from PackageJson property \"repository.url\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-javascript-library#readme",
+              "type": "website",
+              "comment": "as detected from PackageJson property \"homepage\""
+            },
+            {
+              "url": "https://github.com/CycloneDX/cyclonedx-javascript-library/issues",
+              "type": "issue-tracker",
+              "comment": "as detected from PackageJson property \"bugs.url\""
+            }
+          ],
+          "properties": [
+            {
+              "name": "cdx:npm:package:constraint:engine:node",
+              "value": ">=20.18.0"
+            }
+          ]
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "name": "reveil-musical",
+      "version": "0.1.0",
+      "bom-ref": "reveil-musical@0.1.0",
+      "description": "Service Réveil musical (TP GDRM)",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/reveil-musical@0.1.0",
+      "properties": [
+        {
+          "name": "cdx:npm:package:constraint:engine:node",
+          "value": ">=24 <25"
+        },
+        {
+          "name": "cdx:npm:package:private",
+          "value": "true"
+        },
+        {
+          "name": "cdx:npm:package:path",
+          "value": ""
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "reflect-metadata",
+      "version": "0.2.2",
+      "bom-ref": "reveil-musical@0.1.0|reflect-metadata@0.2.2",
+      "author": "Ron Buckton",
+      "description": "Polyfill for Metadata Reflection API",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/reflect-metadata@0.2.2",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/rbuckton/reflect-metadata.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "http://rbuckton.github.io/reflect-metadata",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/rbuckton/reflect-metadata/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/reflect-metadata/-/reflect-metadata-0.2.2.tgz",
+          "type": "distribution",
+          "hashes": [
+            {
+              "alg": "SHA-512",
+              "content": "bab07081faef54ffde0325f1e2196e262bc12b3b846d242cf6b2960ab0a46d2c4dbfc9b13dc51929eba8177532e26265dcbc29ae9eb2cb9ff7f555a2819e0ae9"
+            }
+          ],
+          "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/reflect-metadata"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "tsyringe",
+      "version": "4.10.0",
+      "bom-ref": "reveil-musical@0.1.0|tsyringe@4.10.0",
+      "author": "Steven Hobson-Campbell",
+      "description": "Lightweight dependency injection container for JavaScript/TypeScript",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/tsyringe@4.10.0",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/Microsoft/tsyringe.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://github.com/Microsoft/tsyringe#readme",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/Microsoft/tsyringe/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/tsyringe/-/tsyringe-4.10.0.tgz",
+          "type": "distribution",
+          "hashes": [
+            {
+              "alg": "SHA-512",
+              "content": "6b1af721d36e548c6768ae571845054eedd898043a965960aefa9f128475ea0fc71a7618ffa59ee2858436d027ccaebf2e9276babf4f01bf34441b7bfd4e2e83"
+            }
+          ],
+          "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:constraint:engine:node",
+          "value": ">= 6.0.0"
+        },
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/tsyringe"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "tslib",
+      "version": "1.14.1",
+      "bom-ref": "reveil-musical@0.1.0|tslib@1.14.1",
+      "author": "Microsoft Corp.",
+      "description": "Runtime library for TypeScript helper functions",
+      "licenses": [
+        {
+          "license": {
+            "id": "0BSD",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "purl": "pkg:npm/tslib@1.14.1",
+      "externalReferences": [
+        {
+          "url": "git+https://github.com/Microsoft/tslib.git",
+          "type": "vcs",
+          "comment": "as detected from PackageJson property \"repository.url\""
+        },
+        {
+          "url": "https://www.typescriptlang.org/",
+          "type": "website",
+          "comment": "as detected from PackageJson property \"homepage\""
+        },
+        {
+          "url": "https://github.com/Microsoft/TypeScript/issues",
+          "type": "issue-tracker",
+          "comment": "as detected from PackageJson property \"bugs.url\""
+        },
+        {
+          "url": "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz",
+          "type": "distribution",
+          "hashes": [
+            {
+              "alg": "SHA-512",
+              "content": "5e78b7e4d2b38e032bc1ebf2b074c202bb4b0e93efc9ef3357fd04e04c989f8dcfeffeeabd0c0f87d0469077b06ccba5567b5b8a099c4fbadd5f704da3dc1126"
+            }
+          ],
+          "comment": "as detected from npm-ls property \"resolved\" and property \"integrity\""
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:npm:package:path",
+          "value": "node_modules/tslib"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "reveil-musical@0.1.0",
+      "dependsOn": [
+        "reveil-musical@0.1.0|reflect-metadata@0.2.2",
+        "reveil-musical@0.1.0|tsyringe@4.10.0"
+      ]
+    },
+    {
+      "ref": "reveil-musical@0.1.0|reflect-metadata@0.2.2"
+    },
+    {
+      "ref": "reveil-musical@0.1.0|tsyringe@4.10.0",
+      "dependsOn": [
+        "reveil-musical@0.1.0|tslib@1.14.1"
+      ]
+    },
+    {
+      "ref": "reveil-musical@0.1.0|tslib@1.14.1"
+    }
+  ]
+}

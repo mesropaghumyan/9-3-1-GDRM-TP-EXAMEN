@@ -1,0 +1,23 @@
+# Porte QA automatique : la fusion d'une pull request n'a lieu que si ce job est vert.
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Definition of Done (CLAUDE.md §5.1) : typecheck, lint, format, arch, tests, couverture, audits.
+      - run: npm run verify
