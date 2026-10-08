@@ -1,0 +1,13 @@
+node_modules
+dist
+coverage
+package-lock.json
+sbom.cdx.json
+docs/licenses.csv
+_bmad
+_bmad-output
+.claude
+.github
+docs
+CLAUDE.md
+tests/fixtures

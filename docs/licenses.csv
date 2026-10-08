@@ -1,0 +1,4 @@
+"module name","license","repository"
+"reflect-metadata@0.2.2","Apache-2.0","https://github.com/rbuckton/reflect-metadata"
+"tslib@1.14.1","0BSD","https://github.com/Microsoft/tslib"
+"tsyringe@4.10.0","MIT","https://github.com/Microsoft/tsyringe"
