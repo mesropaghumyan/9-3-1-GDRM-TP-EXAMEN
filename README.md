@@ -8,6 +8,7 @@ Référentiel technique : [CLAUDE.md](CLAUDE.md) · [SFD](docs/SFD.md) · [STD](
 
 - Node.js **24** (`nvm use`, voir `.nvmrc`), puis `npm ci`.
 - `npm run verify` : typecheck, lint, format, arch, tests, couverture, audit des vulnérabilités et des licences.
+- Couverture (seuils bloquants dans `vitest.config.ts`) : `domain`+`application` ≥ 90 % lignes / 85 % branches, `infrastructure` ≥ 85 % / 75 %, global ≥ 85 % / 80 %. Aucun fichier n'est exclu de la couverture. Un test sans assertion échoue (`expect.requireAssertions`), et `fetch` est bloqué dans tous les tests.
 - Autres scripts : `build`, `start`, `dev`, `test:unit`, `test:contract`, `test:integration`, `sbom`.
 
 ## Dépendances (audit du 2026-10-08)

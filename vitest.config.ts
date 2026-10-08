@@ -5,6 +5,8 @@ export default defineConfig({
     include: ['tests/**/*.spec.ts'],
     setupFiles: ['tests/setup.ts'],
     environment: 'node',
+    // Why: a test without any assertion proves nothing and must fail (CLAUDE.md §6.6).
+    expect: { requireAssertions: true },
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
