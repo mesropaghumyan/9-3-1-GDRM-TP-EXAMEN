@@ -41,7 +41,7 @@ development_status:
   1-3-horloge-journal-structuré-et-préférences-mockées: done
   1-4-choix-du-morceau-et-liste-locale: done
   1-5-canaux-de-notification-simulés: done
-  1-6-déclenchement-d-un-réveil-nominal: backlog
+  1-6-déclenchement-d-un-réveil-nominal: done
   epic-1-retrospective: optional
 
   epic-2: backlog
