@@ -1,5 +1,7 @@
 import { container, instanceCachingFactory, type DependencyContainer } from 'tsyringe';
 import {
+  CHANNEL_DELIVERY,
+  ChannelDelivery,
   ChannelResolver,
   FallbackMusicProvider,
   TRACK_SELECTION_POLICY,
@@ -23,6 +25,7 @@ import {
   type Logger,
   type MusicProvider,
   type NotificationChannel,
+  type NotificationChannelResolver,
 } from '../domain/index.js';
 import { SystemClock } from '../infrastructure/clock/index.js';
 import { ConfigError, type AppConfig } from '../infrastructure/config/index.js';
@@ -122,6 +125,14 @@ export function buildContainer(config: AppConfig): DependencyContainer {
         d.resolveAll<NotificationChannel>(NOTIFICATION_CHANNEL),
         config.notifications.channelFallbackOrder,
         d.resolve<Logger>(LOGGER),
+      ),
+  });
+  c.register(CHANNEL_DELIVERY, {
+    useFactory: (d) =>
+      new ChannelDelivery(
+        d.resolve<NotificationChannelResolver>(NOTIFICATION_CHANNEL_RESOLVER),
+        d.resolve<Logger>(LOGGER),
+        config.notifications.sendTimeoutMs,
       ),
   });
   c.register(TRACK_RESOLVER, {

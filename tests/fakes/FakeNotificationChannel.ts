@@ -21,3 +21,15 @@ export class FakeNotificationChannel implements NotificationChannel {
     return Promise.resolve();
   }
 }
+
+/** Channel whose send never settles on its own and ignores the signal (worst case for timeouts). */
+export class HangingNotificationChannel implements NotificationChannel {
+  readonly signals: (AbortSignal | undefined)[] = [];
+
+  constructor(readonly kind: ChannelKind) {}
+
+  send(_notification: WakeUpNotification, signal?: AbortSignal): Promise<void> {
+    this.signals.push(signal);
+    return new Promise<void>(() => undefined);
+  }
+}

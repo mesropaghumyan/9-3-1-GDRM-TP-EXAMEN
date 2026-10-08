@@ -7,12 +7,14 @@ import {
   createUserId,
   LOG_WRITER,
   LOGGER,
+  NOTIFICATION_CHANNEL,
   type Clock,
   type Logger,
 } from '../../src/domain/index.js';
 import { loadConfig } from '../../src/infrastructure/config/index.js';
 import { buildContainer } from '../../src/main/container.js';
 import { FakeClock } from '../fakes/FakeClock.js';
+import { FakeNotificationChannel } from '../fakes/FakeNotificationChannel.js';
 import { InMemoryLogWriter } from '../fakes/InMemoryLogWriter.js';
 
 function setup(env: Record<string, string> = {}) {
@@ -100,5 +102,21 @@ describe('Command line entry point', () => {
     expect(status).toBe(2);
     expect(stdout).toContain('INVALID_INPUT');
     expect(stdout).not.toContain('wakeup.started');
+  });
+});
+
+describe('Channel added in the container', () => {
+  it('fake channel registered in a child container -> used without touching WakeUpService', async () => {
+    const { container } = setup();
+    const child = container.createChildContainer();
+    const fake = new FakeNotificationChannel('EMAIL');
+    child.register(NOTIFICATION_CHANNEL, { useValue: fake });
+
+    const result = await child
+      .resolve<WakeUpUseCase>(WAKE_UP_USE_CASE)
+      .trigger(createUserId('alice'), 'MONDAY', 'SUNNY');
+
+    expect(result).toMatchObject({ status: 'DELIVERED', channel: 'EMAIL' });
+    expect(fake.sent).toHaveLength(1);
   });
 });
