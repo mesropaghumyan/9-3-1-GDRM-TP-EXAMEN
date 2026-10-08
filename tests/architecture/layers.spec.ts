@@ -20,7 +20,10 @@ function cruise(cwd: string): { status: number; output: string } {
   }
 }
 
-describe('Layer rules (AD-1)', () => {
+// Why: dependency-cruiser runs as a child process and is slow when the whole suite runs in parallel.
+const SLOW_TEST_TIMEOUT_MS = 60_000;
+
+describe('Layer rules (AD-1)', { timeout: SLOW_TEST_TIMEOUT_MS }, () => {
   it('real source tree -> no violation', () => {
     expect(cruise(root).status).toBe(0);
   });

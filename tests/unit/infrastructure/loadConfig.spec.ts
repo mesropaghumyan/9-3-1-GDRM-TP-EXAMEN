@@ -5,7 +5,7 @@ describe('loadConfig', () => {
   it('empty environment -> typed defaults', () => {
     const config = loadConfig({});
 
-    expect(config.music.providerOrder).toEqual(['local']);
+    expect(config.music.providerOrder).toEqual(['itunes', 'musicbrainz', 'local']);
     expect(config.music.localTracks.length).toBeGreaterThanOrEqual(3);
     expect(config.notifications.channelFallbackOrder).toEqual(['EMAIL', 'SMS', 'PUSH']);
     expect(config.notifications.sendTimeoutMs).toBe(2000);

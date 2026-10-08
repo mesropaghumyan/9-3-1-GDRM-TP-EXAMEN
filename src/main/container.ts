@@ -1,4 +1,4 @@
-import { container, type DependencyContainer } from 'tsyringe';
+import { container, instanceCachingFactory, type DependencyContainer } from 'tsyringe';
 import {
   ChannelResolver,
   FallbackMusicProvider,
@@ -9,6 +9,7 @@ import {
 } from '../application/index.js';
 import {
   CLOCK,
+  HTTP_CLIENT,
   LOG_WRITER,
   LOGGER,
   MUSIC_PROVIDER,
@@ -17,6 +18,8 @@ import {
   NOTIFICATION_SINK,
   TRACK_RESOLVER,
   USER_PREFERENCES_PROVIDER,
+  type Clock,
+  type HttpClient,
   type Logger,
   type MusicProvider,
   type NotificationChannel,
@@ -28,6 +31,10 @@ import {
   LoggerNotificationSink,
   StdoutLogWriter,
 } from '../infrastructure/logging/index.js';
+import { FetchHttpClient } from '../infrastructure/http/index.js';
+import { ITunesMusicProvider } from '../infrastructure/music/itunes/index.js';
+import { MusicBrainzMusicProvider } from '../infrastructure/music/musicbrainz/index.js';
+import { CircuitBreaker, RateLimiter, TtlCache } from '../infrastructure/resilience/index.js';
 import { LocalFallbackMusicProvider } from '../infrastructure/music/local/index.js';
 import {
   EmailChannelAdapter,
@@ -40,8 +47,12 @@ import {
   InMemoryUserPreferencesProvider,
 } from '../infrastructure/preferences/index.js';
 import {
+  BREAKER_CONFIG,
   EMAIL_CLIENT,
+  HTTP_CONFIG,
+  ITUNES_CONFIG,
   LOCAL_TRACKS,
+  MUSICBRAINZ_CONFIG,
   PUSH_SERVICE,
   SMS_GATEWAY,
   USER_PREFERENCES_DATA,
@@ -62,8 +73,40 @@ export function buildContainer(config: AppConfig): DependencyContainer {
   c.registerSingleton(NOTIFICATION_SINK, LoggerNotificationSink);
   c.register(USER_PREFERENCES_DATA, { useValue: DEFAULT_USER_PREFERENCES });
   c.registerSingleton(USER_PREFERENCES_PROVIDER, InMemoryUserPreferencesProvider);
+  c.register(HTTP_CONFIG, { useValue: config.http });
+  c.register(BREAKER_CONFIG, { useValue: config.breaker });
+  c.register(ITUNES_CONFIG, { useValue: config.music.itunes });
+  c.register(MUSICBRAINZ_CONFIG, { useValue: config.music.musicbrainz });
+  c.registerSingleton(HTTP_CLIENT, FetchHttpClient);
   c.register(LOCAL_TRACKS, { useValue: config.music.localTracks });
   c.registerSingleton(LocalFallbackMusicProvider);
+  // Why: one provider = one cache, one limiter and one breaker, all singletons built together here.
+  c.register(MUSIC_PROVIDER, {
+    useFactory: instanceCachingFactory((d) => {
+      const clock = d.resolve<Clock>(CLOCK);
+      const settings = config.music.itunes;
+      return new ITunesMusicProvider(
+        d.resolve<HttpClient>(HTTP_CLIENT),
+        settings,
+        new TtlCache(clock, settings.ttlMs),
+        new RateLimiter(clock, settings.maxRequests, settings.windowMs),
+        new CircuitBreaker(clock, config.breaker.failureThreshold, config.breaker.halfOpenAfterMs),
+      );
+    }),
+  });
+  c.register(MUSIC_PROVIDER, {
+    useFactory: instanceCachingFactory((d) => {
+      const clock = d.resolve<Clock>(CLOCK);
+      const settings = config.music.musicbrainz;
+      return new MusicBrainzMusicProvider(
+        d.resolve<HttpClient>(HTTP_CLIENT),
+        settings,
+        new TtlCache(clock, settings.ttlMs),
+        new RateLimiter(clock, settings.maxRequests, settings.windowMs),
+        new CircuitBreaker(clock, config.breaker.failureThreshold, config.breaker.halfOpenAfterMs),
+      );
+    }),
+  });
   c.register(MUSIC_PROVIDER, { useToken: LocalFallbackMusicProvider });
   c.registerSingleton(EMAIL_CLIENT, FakeEmailClient);
   c.registerSingleton(SMS_GATEWAY, FakeSmsGateway);

@@ -16,7 +16,8 @@ import { FakeClock } from '../fakes/FakeClock.js';
 import { InMemoryLogWriter } from '../fakes/InMemoryLogWriter.js';
 
 function setup(env: Record<string, string> = {}) {
-  const container = buildContainer(loadConfig(env));
+  // Why: these scenarios use the local list as the only provider (no HTTP at all).
+  const container = buildContainer(loadConfig({ MUSIC_PROVIDER_ORDER: 'local', ...env }));
   const writer = new InMemoryLogWriter();
   container.register(LOG_WRITER, { useValue: writer });
   container.register(CLOCK, { useValue: new FakeClock() });
@@ -66,14 +67,6 @@ describe('Production container (local list as the only provider)', () => {
       ).toEqual([expect.objectContaining({ channel, recipient: user })]);
     },
   );
-
-  it('provider order naming an unregistered adapter -> explicit ConfigError', () => {
-    const { container } = setup({ MUSIC_PROVIDER_ORDER: 'itunes,local' });
-
-    expect(() => container.resolve<WakeUpUseCase>(WAKE_UP_USE_CASE)).toThrow(
-      /no adapter registered/,
-    );
-  });
 });
 
 describe('Command line entry point', () => {
@@ -81,7 +74,10 @@ describe('Command line entry point', () => {
   const tsx = resolve(import.meta.dirname, '../../node_modules/.bin/tsx');
 
   it('alice LUNDI SOLEIL -> DELIVERED JSON on stdout, exit code 0', () => {
-    const out = execFileSync(tsx, [entry, 'alice', 'LUNDI', 'SOLEIL'], { encoding: 'utf8' });
+    const out = execFileSync(tsx, [entry, 'alice', 'LUNDI', 'SOLEIL'], {
+      encoding: 'utf8',
+      env: { ...process.env, MUSIC_PROVIDER_ORDER: 'local' },
+    });
 
     const lines = out
       .trim()

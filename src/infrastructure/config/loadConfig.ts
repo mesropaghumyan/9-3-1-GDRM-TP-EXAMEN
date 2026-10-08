@@ -7,7 +7,7 @@ export type Environment = Readonly<Record<string, string | undefined>>;
 const PROVIDER_NAMES: readonly ProviderName[] = ['itunes', 'musicbrainz', 'local'];
 
 // Why: defaults live here (the composition root reads them once), never in the business logic.
-const DEFAULT_PROVIDER_ORDER: readonly ProviderName[] = ['local'];
+const DEFAULT_PROVIDER_ORDER: readonly ProviderName[] = ['itunes', 'musicbrainz', 'local'];
 const DEFAULT_LOCAL_TRACKS = [
   createTrack('Here Comes the Sun', 'The Beatles'),
   createTrack('Three Little Birds', 'Bob Marley'),
