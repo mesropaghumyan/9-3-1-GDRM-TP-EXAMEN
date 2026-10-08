@@ -58,7 +58,7 @@ development_status:
   epic-3-retrospective: optional
 
   epic-4: backlog
-  4-1-tests-d-architecture-et-de-non-fuite: backlog
+  4-1-tests-d-architecture-et-de-non-fuite: done
   4-2-inventaire-des-dépendances-licences-et-sbom: backlog
   4-3-couverture-intégration-et-definition-of-done: backlog
   epic-4-retrospective: optional
