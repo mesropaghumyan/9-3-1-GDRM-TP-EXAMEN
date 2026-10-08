@@ -97,7 +97,8 @@ Règles de dépendance (appliquées par `dependency-cruiser`, §6.4) :
 ├── _bmad/                       # méthode BMAD (voir §5.2)
 ├── docs/
 │   ├── adr/
-│   └── architecture.md
+│   ├── SFD.md                   # spécifications fonctionnelles détaillées
+│   └── STD.md                   # spécifications techniques détaillées = document d'architecture
 ├── src/
 │   ├── domain/
 │   │   ├── model/               # Track, TrackQuery, UserPreferences, WeatherType, ChannelKind...
@@ -112,7 +113,9 @@ Règles de dépendance (appliquées par `dependency-cruiser`, §6.4) :
 │   │   ├── music/{itunes,musicbrainz,local}/
 │   │   ├── notifications/{email,sms,push}/   # mocks + adapters
 │   │   ├── preferences/         # mock du service interne
-│   │   ├── http/                # HttpClient adapter sur fetch, timeout, cache TTL
+│   │   ├── http/                # HttpClient adapter sur fetch, timeout
+│   │   ├── resilience/          # TtlCache, RateLimiter, CircuitBreaker (maison, via Clock)
+│   │   ├── logging/             # JsonLogger, StdoutLogWriter, LoggerNotificationSink
 │   │   └── config/              # schéma + chargement de la config
 │   ├── presentation/
 │   └── main/
@@ -143,10 +146,10 @@ export interface MusicProvider {
 export const MUSIC_PROVIDER = Symbol('MusicProvider');
 ```
 
-- **Ports minimaux attendus** (signatures indicatives, à valider en phase Architect) :
+- **Ports minimaux attendus** (signatures validées en phase Architect, détail dans `docs/STD.md` §3.2) :
 
 ```ts
-interface WakeUpUseCase { trigger(userId: UserId, day: DayOfWeek, weather: WeatherType): Promise<WakeUpResult>; }
+interface WakeUpUseCase { trigger(userId: UserId, day: DayOfWeek, weather: WeatherType, signal?: AbortSignal): Promise<WakeUpResult>; }
 interface UserPreferencesProvider { get(userId: UserId, signal?: AbortSignal): Promise<UserPreferences>; }
 interface MusicProvider { readonly name: string; find(q: TrackQuery, signal?: AbortSignal): Promise<Track | null>; }
 interface NotificationChannel { readonly kind: ChannelKind; send(n: WakeUpNotification, signal?: AbortSignal): Promise<void>; }
@@ -154,7 +157,13 @@ interface NotificationChannelResolver { resolve(preferred: ChannelKind): readonl
 interface Clock { now(): Date; }
 interface Logger { info(...); warn(...); error(...); }
 interface HttpClient { getJson(url: string, opts: { headers?: Record<string,string>; timeoutMs: number; signal?: AbortSignal }): Promise<HttpResponse>; }
+// Ports ajoutés et validés par l'Architect (STD.md §3.2) :
+interface TrackResolver { resolve(q: TrackQuery, signal?: AbortSignal): Promise<ResolvedTrack>; } // ne retourne jamais null ; implémenté par FallbackMusicProvider
+interface NotificationSink { record(entry: SimulatedDelivery): void; }  // les mocks de canaux n'écrivent que par lui
+interface LogWriter { write(line: string): void; }                      // seul point de sortie du journal (StdoutLogWriter)
 ```
+
+`WakeUpService` dépend de `TrackResolver` (et non de `MusicProvider`) afin de connaître la provenance du morceau. `FallbackMusicProvider` implémente les deux ports.
 
 - **Modèles de domaine purs** : `Track { title; artist }`, `TrackQuery`, `UserPreferences`, `WakeUpNotification`, `WeatherType`, `ChannelKind`, `WakeUpResult`. Immuables, sans décorateur, sans type tiers.
 - **Mappage des libellés d'entrée** `SOLEIL/PLUIE/NEIGE/NUAGEUX` → `WeatherType` : à la frontière d'entrée (Présentation) uniquement, avec validation (valeur inconnue → erreur typée).
@@ -366,7 +375,7 @@ Le dossier **`_bmad/`** contient la méthode (agents, workflows, config) ; les a
 | Rôle | Responsabilité sur ce projet | Produit |
 |---|---|---|
 | **Analyst** | Clarifie besoins métier et contraintes (E1–E4), risques fournisseurs | Brief / besoins validés |
-| **Architect** | Définit boundaries, ports, adapters, tokens et durées de vie tsyringe, stratégie de résilience ; **garant de ce fichier** | `docs/architecture.md`, ADR |
+| **Architect** | Définit boundaries, ports, adapters, tokens et durées de vie tsyringe, stratégie de résilience ; **garant de ce fichier** | `docs/SFD.md`, `docs/STD.md`, ADR |
 | **Developer** | Implémente en TDD une story à la fois, dans les frontières définies | Code + tests |
 | **QA** | Valide critères d'acceptation, non-régression, non-fuite DTO, absence d'appel réseau en test, conformité licences | Rapport de revue / go–no-go |
 
@@ -385,7 +394,7 @@ Le dossier **`_bmad/`** contient la méthode (agents, workflows, config) ; les a
 - `done` seulement après validation QA. Une régression renvoie en `in-progress`.
 - Mettre à jour le fichier de statut du sprint défini par `_bmad/` **dans le même commit** que le changement.
 
-**Workflow d'interaction** : lance les agents/workflows par les commandes exposées par ton installation BMAD (consulte `_bmad/` ou l'aide du framework pour la liste à jour), une story à la fois, en conservant un contexte propre entre deux phases. Respecte strictement les **frontières modulaires** décrites par BMAD et `docs/architecture.md` : un agent Developer ne modifie pas les ports du Domaine sans repasser par l'Architect.
+**Workflow d'interaction** : lance les agents/workflows par les commandes exposées par ton installation BMAD (consulte `_bmad/` ou l'aide du framework pour la liste à jour), une story à la fois, en conservant un contexte propre entre deux phases. Respecte strictement les **frontières modulaires** décrites par BMAD et `docs/STD.md` : un agent Developer ne modifie pas les ports du Domaine sans repasser par l'Architect.
 
 ---
 
