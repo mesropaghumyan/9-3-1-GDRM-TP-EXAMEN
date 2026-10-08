@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Termine une story : vérifie, pousse la branche et ouvre une pull request vers master.
-# Ne fusionne jamais : la fusion reste une décision humaine, après validation QA.
+# Active la fusion automatique (squash) : GitHub fusionne dès que la CI (job "verify", porte QA) est verte.
 #
 # Usage : scripts/git/finish-story.sh [--type feat|fix|test|refactor|docs|chore] [--draft] [--skip-verify]
 set -euo pipefail
@@ -51,6 +51,7 @@ git push --set-upstream origin "$BRANCH"
 EXISTING_PR="$(gh pr list --head "$BRANCH" --state open --json url --jq '.[0].url // empty')"
 if [ -n "$EXISTING_PR" ]; then
   info "Une pull request existe déjà : $EXISTING_PR"
+  enable_auto_merge "$EXISTING_PR"
   exit 0
 fi
 
@@ -72,4 +73,4 @@ URL="$(gh pr create "${ARGS[@]}")"
 
 gh issue edit "$NUMBER" --remove-label in-progress --add-label review >/dev/null
 info "Pull request ouverte : $URL"
-info "Fusion (squash) à faire par un humain après validation QA."
+enable_auto_merge "$URL"

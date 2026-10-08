@@ -40,3 +40,11 @@ issue_number_for() {
 issue_title_for() {
   printf '%s\n' "$ISSUES_TSV" | awk -F'\t' -v n="$1" '$1 == n { print $2; exit }'
 }
+
+# Fusion automatique (squash, branche supprimée) dès que les contrôles requis sont verts.
+# Échoue en clair si la fusion automatique n'est pas autorisée sur le dépôt.
+enable_auto_merge() {
+  gh pr merge "$1" --auto --squash --delete-branch \
+    || die "fusion automatique impossible : vérifier les réglages du dépôt (auto-merge, protection de $BASE_BRANCH)"
+  info "Fusion automatique activée : la pull request sera fusionnée quand la CI (verify) sera verte."
+}
