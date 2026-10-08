@@ -73,7 +73,17 @@ export function loadConfig(env: Environment): AppConfig {
   const config: AppConfig = {
     http: { maxRetries: 1 },
     breaker: { failureThreshold: 3, halfOpenAfterMs: 30_000 },
-    music: { providerOrder, localTracks: DEFAULT_LOCAL_TRACKS },
+    music: {
+      providerOrder,
+      localTracks: DEFAULT_LOCAL_TRACKS,
+      itunes: {
+        baseUrl: 'https://itunes.apple.com/search',
+        timeoutMs: 3000,
+        ttlMs: 3_600_000,
+        maxRequests: 20,
+        windowMs: 60_000,
+      },
+    },
     notifications: {
       channelFallbackOrder,
       sendTimeoutMs: parseTimeout(env['NOTIFICATION_TIMEOUT_MS']),

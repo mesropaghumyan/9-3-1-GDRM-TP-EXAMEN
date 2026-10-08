@@ -46,7 +46,7 @@ development_status:
 
   epic-2: backlog
   2-1-client-http-et-briques-de-résilience: done
-  2-2-adapter-itunes: backlog
+  2-2-adapter-itunes: done
   2-3-adapter-musicbrainz: backlog
   2-4-chaîne-de-fournisseurs-configurable: backlog
   epic-2-retrospective: optional
