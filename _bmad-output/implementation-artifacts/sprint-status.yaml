@@ -39,7 +39,7 @@ development_status:
   1-1-socle-du-projet-et-spike-d-injection: done
   1-2-domaine-ports-et-validation-des-entrées: done
   1-3-horloge-journal-structuré-et-préférences-mockées: done
-  1-4-choix-du-morceau-et-liste-locale: backlog
+  1-4-choix-du-morceau-et-liste-locale: done
   1-5-canaux-de-notification-simulés: backlog
   1-6-déclenchement-d-un-réveil-nominal: backlog
   epic-1-retrospective: optional
