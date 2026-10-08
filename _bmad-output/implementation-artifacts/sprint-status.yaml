@@ -51,7 +51,7 @@ development_status:
   2-4-chaîne-de-fournisseurs-configurable: done
   epic-2-retrospective: optional
 
-  epic-3: backlog
+  epic-3: done
   3-1-repli-entre-canaux-et-échec-explicite: done
   3-2-utilisateur-inconnu-et-préférences-indisponibles: done
   3-3-annulation-et-garantie-anti-silence: done
